@@ -23,7 +23,7 @@
         <div class="form-todo form-group">
 
             <p>
-                <input placeholder="Nome" type="text" name="autor" class="form-control" v-model="name">
+                <input placeholder="Nome" type="text" name="autor" class="form-control" v-model="name" >
             </p>
             <p>
                 <textarea placeholder="Comentário" type="text" name="message" class="form-control" v-model="message"></textarea>
@@ -32,12 +32,12 @@
         </div>
         <hr />
         <div class="list-group">
-            <div class="list-group-item" v-for="(comment,index) in comments">
+            <div class="list-group-item" v-for="(comment,index) in allComments">
                 <span class="comment__author">Autor: <strong> {{comment.name}}</strong></span>
                 <p>{{comment.message}}</p>
 
                 <div>
-                    <a href="#" title="Excluir" v-on:click="removeComment(index)">Excluir</a>
+                    <a href="#" title="Excluir" v-on:click.prevent="removeComment(index)">Excluir</a>
                 </div>
             </div>
 
@@ -55,7 +55,7 @@
             },
             methods: {
                 addComment() {
-                    if (this.name.trim() === '' || this.message.trim() === '') {
+                    if (this.message.trim() === '') {
                         return;
                     }
                     this.comments.push({
@@ -65,8 +65,16 @@
                         this.name = '',
                         this.message = ''
                 },
-                removeComment(index){
-                    this.comments.splice(index,1)
+                removeComment(index) {
+                    this.comments.splice(index, 1)
+                }
+            },
+            computed: {
+                allComments() {
+                    return this.comments.map(comment => ({
+                        ...comment,
+                        name: comment.name.trim() === '' ? 'Anônimo' : comment.name
+                    }))
                 }
             }
         })
